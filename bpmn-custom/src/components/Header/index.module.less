@@ -1,0 +1,31 @@
+
+
+@header-wrapper-height: 48px;
+@header-wrapper-padding: 0 30px 0 16px;
+@header-wrapper-background: #323659;
+@header-font-color: #fff;
+// 头部
+.header {
+  width: 100%;
+  height: @header-wrapper-height;
+  background-color: @header-wrapper-background;
+  padding: @header-wrapper-padding;
+  position: fixed;
+  z-index: 1001;
+  .logo-container {
+    height: @header-wrapper-height;
+    margin-bottom: 0;
+    color: @header-font-color;
+    font-size: 12px;
+    display: flex;
+    .logo {
+      line-height: 48px;
+    }
+    .systemName {
+      color: @header-font-color;
+      font-size: 12px;
+      line-height: 48px;
+      padding-left: 8px;
+    }
+  }
+}
