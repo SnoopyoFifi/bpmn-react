@@ -1,7 +1,7 @@
 import inherits from 'inherits';
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
 import { append as svgAppend, create as svgCreate } from 'tiny-svg';
-import defaultData from '../../../resources/defaultData';
+import { customTasks } from '../../../resources/defaultData';
 
 export default function CustomRenderer(eventBus) {
   BaseRenderer.call(this, eventBus, 1500);
@@ -10,7 +10,7 @@ export default function CustomRenderer(eventBus) {
     const bo = element.businessObject;
     // console.log('element: ', element);
     if (bo) {
-      const customShapeData = defaultData.customTasks.filter(
+      const customShapeData = customTasks.filter(
         item => item.customType === element.customType
         || (bo.name && bo.name === item.initProperties.name)
       )[0];
@@ -26,7 +26,7 @@ export default function CustomRenderer(eventBus) {
     const bo = shape.businessObject;
     let href = '';
     if (bo) {
-      const customShapeData = defaultData.customTasks.filter(
+      const customShapeData = customTasks.filter(
         item => item.customType === shape.customType
         || (bo.name && bo.name === item.initProperties.name)
       )[0];
