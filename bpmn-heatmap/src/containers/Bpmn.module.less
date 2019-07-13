@@ -18,58 +18,58 @@
 }
 
 .container {
-  position: relative;
-  top: 0;
-  padding: 0;
-  margin: 10px;
-  width: auto;
-  height: auto;
-  flex: auto;
+  overflow: hidden;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   font-size: 12px;
-  // display: flex;
-  // justify-content: space-between;
-  svg {
-    // margin-top: 30px;
-  }
-  .viewer {
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
-    padding: 24px;
-    margin-bottom: 16px;
-    .handles {
-      font-size: 16px;
-      font-weight: 700;
-      color: #333333;
-      line-height: 16px;
-      margin-bottom: 16px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+  position: relative;
+  .legend_wrap {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -15px;
+    opacity: .6;
+    .heatmap_legend {
+      display: flex;
+      line-height: 14px;
+      margin-bottom: 24px;
+      .legend_min,
+      .legend_max {
+        font-size: 14px;
+        // font-weight: 700;
+        color: #333333;
+      }
+      .legend_img {
+        width: 222px;
+        height: 14px;
+        border-radius: 7px;
+        margin: 0 8px;
+      }
     }
-    .canvas {
-      height: auto;
-    }
   }
-  .properties {
-    width: 100%;
-    min-width: 200px;
-    min-height: 600px;
-    background-color: #eee;
-    overflow: auto;
+  .tooltip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(67, 76, 163);
+    color: #fff;
+    font-size: 14px;
+    // width: 24px;
+    padding: 0 5px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+  }
+  .canvas {
+    height: 400px;
+    // height: 500px;
+    // height: 680px;
+    padding-bottom: 24px;
+    border: 1px solid #323659;    
   }
   :global {
-    .highlight-overlay {
-      border: 1px solid #000;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .bjs-container {
-      display: flex;
-      justify-content: start;
-      align-items: flex-start;
-      padding: 10px;
-      background-color: #fff;
-      border: 1px solid rgba(151,151,151,0.40);
-    }
     .diagram-note {
       background-color: @primary-opacity-color;
       color: White;
@@ -105,7 +105,7 @@
                 width: 28px;
                 height: 16px;
                 line-height: 16px;
-                color: #ffff;
+                color: #fff;
                 padding-left: 12px;
                 padding-right: 2px;
                 text-align: right;
@@ -161,136 +161,28 @@
           box-shadow: 10px 10px 5px #888888;
         }
         .djs-element {
-          // &.needs-discussion {
-          //   &>.djs-visual {
-          //     &:nth-child(1) {
-          //       stroke: rgba(66, 180, 21, 0.7) !important; /* color elements as red */
-          //     } 
-          //   }
-          // }
-          .djs-outline {
-            stroke-width: 2px;
-            fill: transparent;
-            stroke: transparent;
-            stroke-dasharray: 85 400;
-            stroke-dashoffset: -220;
-            transition: .8s all ease;
-          }
-          &:hover {
+          &.djs-shape {
+            cursor: pointer;
             .djs-outline {
               stroke-width: 2px;
               fill: transparent;
-              stroke-dasharray: 70 0;
-              stroke-dashoffset: 0;
-              stroke: @primary-opacity-color;
+              stroke: transparent;
+              stroke-dasharray: 85 400;
+              stroke-dashoffset: -220;
+              transition: .8s all ease;
+            }
+            &:hover {
+              .djs-outline {
+                stroke-width: 2px;
+                fill: transparent;
+                stroke-dasharray: 70 0;
+                stroke-dashoffset: 0;
+                stroke: @primary-opacity-color;
+              }
             }
           }
-          // &.selected {
-          //   .djs-outline {
-          //     stroke: @primary-color;
-          //   }
-          // }
         }
-      }
-    }
-    // 缩略图
-    .djs-minimap {
-      position: absolute;
-      right: 0;
-      top: 0;
-      overflow: hidden;
-      background-color: rgba(255, 255, 255, 0.9);
-      border: solid 1px #CCC;
-      border-radius: 2px;
-      box-sizing: border-box;
-      user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      -webkit-user-select: none;
-      .map {
-        display: none;
-        width: 200px;
-        height: 112px;
-        cursor: crosshair;
-      }
-      .viewport {
-        /* fill: rgba(255, 116, 0, 0.25); */
-        fill: none;
-        stroke: none;
-      }
-      .viewport-dom {
-        position: absolute;
-        border: dashed 2px @primary-color;
-        border-radius: 2px;
-        box-sizing: border-box;
-        cursor: move;
-      }
-      .cursor-crosshair {
-        cursor: crosshair;
-      }
-
-      .cursor-move {
-        cursor: move;
-      }
-      &:not(.open) {
-        overflow: hidden;
-        .toggle {
-          width: 38px;
-          height: 38px;
-          line-height: 38px;
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-          cursor: pointer;
-          position: relative;
-          text-align: center;
-          line-height: 38px;
-          &:before {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            top: 6px;
-            right: 6px;
-            background: url(../resources/icons/mapOpen.svg) 0 0 no-repeat;
-            background-size: cover;
-          }
-        }
-        .viewport-dom {
-          display: none;
-        }
-      } 
-      &.open {
-        .map {
-          display: block;
-        }
-        .toggle {
-          position: absolute;
-          right: 0;
-          z-index: 1;
-          width: 38px;
-          height: 38px;
-          line-height: 38px;
-          text-align: center;
-          cursor: pointer;
-          &:before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 5px;
-            left: 10px;
-            background: url(../resources/icons/mapClose.svg) 0 0 no-repeat;
-            background-size: cover;
-          }
-        }
-        .overlay {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          background: rgba(255, 255, 255, 0.2);
-          pointer-events: none;
-        }
+       
       }
     }
   }

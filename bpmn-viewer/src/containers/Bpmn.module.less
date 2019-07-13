@@ -18,57 +18,33 @@
 }
 
 .container {
-  position: relative;
-  top: 0;
-  padding: 0;
-  margin: 10px;
-  width: auto;
-  height: auto;
-  flex: auto;
+  overflow: hidden;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   font-size: 12px;
-  // display: flex;
-  // justify-content: space-between;
-  svg {
-    // margin-top: 30px;
-  }
-  .viewer {
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
-    padding: 24px;
-    margin-bottom: 16px;
-    .handles {
-      font-size: 16px;
-      font-weight: 700;
-      color: #333333;
-      line-height: 16px;
-      margin-bottom: 16px;
-    }
-    .canvas {
-      height: auto;
-    }
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+  position: relative;
+  .canvas {
+    height: 400px;
+    // height: 500px;
+    // height: 680px;
+    border: 1px solid #323659;    
+    user-select: none;
   }
   .properties {
     width: 100%;
     min-width: 200px;
-    min-height: 200px;
+    min-height: 600px;
     background-color: #eee;
     overflow: auto;
   }
   :global {
-    .highlight-overlay {
-      border: 1px solid #000;
-      opacity: 0.4;
-      pointer-events: none;
-    }
     .bjs-container {
       display: flex;
       justify-content: start;
       align-items: flex-start;
-      padding: 10px;
       background-color: #fff;
-      border: 1px solid rgba(151,151,151,0.40);
+      // padding: 10px;
+      // border: 1px solid rgba(151,151,151,0.40);
     }
     .diagram-note {
       background-color: @primary-opacity-color;
@@ -96,29 +72,22 @@
       .djs-overlay-container {
         .djs-overlays {
           .djs-overlay {
+            display: block !important;
             .tagsWrap {
-              display: flex;
-
+              display: flex;              
+              justify-content: space-between;
               .tag {
-                display: inline-block;
                 border-radius: 8px;
                 width: 28px;
                 height: 16px;
                 line-height: 16px;
-                color: #ffff;
-                padding-left: 12px;
-                padding-right: 2px;
+                color: #fff;
                 text-align: right;
-                position: relative;
-                &:before {
-                  content: '';
-                  width: 9px;
-                  height: 9px;
-                  position: absolute;
-                  background-color: #fff;
-                  border-radius: 5px;
-                  top: 3px;
-                  left: 2px;
+                display: flex;
+                justify-content: space-around;
+                i {
+                  color: #fff;
+                  font-size: 12px;
                 }
                 &.abnormal {
                   background-color: #FF3232;
@@ -154,145 +123,41 @@
       }
 
       .djs-group {
-        .needs-discussion .djs-visual > :nth-child(1) {
-          stroke: #ff0000 !important; /* color elements as red */
+        .needs-discussion .djs-visual {
+          &> :nth-child(1) {
+            stroke: hotpink !important; /* color elements as red */
+          }
+          .djs-label {
+            fill: hotpink !important;
+          }
+          path {
+            stroke: hotpink !important;
+          }
         }
         .connection-shadow .djs-visual > :nth-child(1) {
           box-shadow: 10px 10px 5px #888888;
         }
         .djs-element {
-          // &.needs-discussion {
-          //   &>.djs-visual {
-          //     &:nth-child(1) {
-          //       stroke: rgba(66, 180, 21, 0.7) !important; /* color elements as red */
-          //     } 
-          //   }
-          // }
           &.djs-shape {
             cursor: pointer;
-          }
-          .djs-outline {
-            stroke-width: 2px;
-            fill: transparent;
-            stroke: transparent;
-            stroke-dasharray: 85 400;
-            stroke-dashoffset: -220;
-            transition: .8s all ease;
-          }
-          &:hover {
             .djs-outline {
               stroke-width: 2px;
               fill: transparent;
-              stroke-dasharray: 70 0;
-              stroke-dashoffset: 0;
-              stroke: @primary-opacity-color;
+              stroke: transparent;
+              stroke-dasharray: 85 400;
+              stroke-dashoffset: -220;
+              transition: .8s all ease;
+            }
+            &:hover {
+              .djs-outline {
+                stroke-width: 2px;
+                fill: transparent;
+                stroke-dasharray: 70 0;
+                stroke-dashoffset: 0;
+                stroke: @primary-opacity-color;
+              }
             }
           }
-          // &.selected {
-          //   .djs-outline {
-          //     stroke: @primary-color;
-          //   }
-          // }
-        }
-      }
-    }
-    // 缩略图
-    .djs-minimap {
-      position: absolute;
-      right: 0;
-      top: 0;
-      overflow: hidden;
-      background-color: rgba(255, 255, 255, 0.9);
-      border: solid 1px #CCC;
-      border-radius: 2px;
-      box-sizing: border-box;
-      user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      -webkit-user-select: none;
-      .map {
-        display: none;
-        width: 200px;
-        height: 112px;
-        cursor: crosshair;
-      }
-      .viewport {
-        /* fill: rgba(255, 116, 0, 0.25); */
-        fill: none;
-        stroke: none;
-      }
-      .viewport-dom {
-        position: absolute;
-        border: dashed 2px @primary-color;
-        border-radius: 2px;
-        box-sizing: border-box;
-        cursor: move;
-      }
-      .cursor-crosshair {
-        cursor: crosshair;
-      }
-
-      .cursor-move {
-        cursor: move;
-      }
-      &:not(.open) {
-        overflow: hidden;
-        .toggle {
-          width: 38px;
-          height: 38px;
-          line-height: 38px;
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-          cursor: pointer;
-          position: relative;
-          text-align: center;
-          line-height: 38px;
-          &:before {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            top: 6px;
-            right: 6px;
-            background: url(../resources/icons/mapOpen.svg) 0 0 no-repeat;
-            background-size: cover;
-          }
-        }
-        .viewport-dom {
-          display: none;
-        }
-      } 
-      &.open {
-        .map {
-          display: block;
-        }
-        .toggle {
-          position: absolute;
-          right: 0;
-          z-index: 1;
-          width: 38px;
-          height: 38px;
-          line-height: 38px;
-          text-align: center;
-          cursor: pointer;
-          &:before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 5px;
-            left: 10px;
-            background: url(../resources/icons/mapClose.svg) 0 0 no-repeat;
-            background-size: cover;
-          }
-        }
-        .overlay {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          background: rgba(255, 255, 255, 0.2);
-          pointer-events: none;
         }
       }
     }
