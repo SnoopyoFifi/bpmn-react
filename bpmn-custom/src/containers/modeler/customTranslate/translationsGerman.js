@@ -237,6 +237,7 @@ export default {
 
   // customTasks
   'CustomTasks': '自定义任务',
+  'Create CustomTaskDemo': '自定义任务',
   'Add Custom Tasks': '自定义定制任务',
   'Create CustomTask': '自定义任务',
 

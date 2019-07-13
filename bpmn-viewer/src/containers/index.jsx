@@ -97,7 +97,7 @@ export default class Bpmn extends Component {
                             <span>${item.failInstCount}</span>
                           </span>
                           <span class="normal tag">
-                            <i class="icon iconfont icon-iconfont_rlsb_succes"></i>
+                            <i class="icon iconfont icon-warning-circle-fill"></i>
                             <span>${item.passInstCount}</span>
                           </span>
                         </div>`
