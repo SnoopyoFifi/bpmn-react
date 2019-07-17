@@ -39,6 +39,10 @@ export default class Bpmn extends Component {
       moddleExtensions: {
         camunda: camundaModdleDescriptor
       },
+      bpmnRenderer: {
+        defaultFillColor: '#fff',
+        defaultStrokeColor: 'hotpink'
+      },
       keyboard: { bindTo: document }
     });
     // 导入xml

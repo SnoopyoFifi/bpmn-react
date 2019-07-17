@@ -18,6 +18,7 @@
     "bfj": "6.1.1",
     "bpmn-js": "^3.0.0",
     "bpmn-js-properties-panel": "^0.30.0",
+    "bpmn-js-sketchy": "^0.2.1",
     "camunda-bpmn-moddle": "^3.0.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
     "css-loader": "1.0.0",

@@ -1,6 +1,7 @@
 import inherits from 'inherits';
 import Modeler from 'bpmn-js/lib/Modeler';
 import minimapModule from 'diagram-js-minimap';
+import sketchyRendererModule from 'bpmn-js-sketchy';
 import CustomPalette from './customPalette';
 import KeyboardModule from './keyboard';
 import CustomTranslate from './customTranslate';
@@ -34,6 +35,9 @@ CustomModeler.prototype._modules = [].concat(
   ],
   [
     minimapModule
+  ],
+  [
+    sketchyRendererModule
   ],
   // [
   //   PrioritiesModule
