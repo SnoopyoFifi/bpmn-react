@@ -37,7 +37,7 @@ export default class Bpmn extends Component {
         minimapModule,
         // lock modeler canvas
         {
-          moveCanvas: ['value', ''], // 禁用move Viewport
+          // moveCanvas: ['value', ''], // 禁用move Viewport
           zoomScroll: ['value', '']
         }
       ]
