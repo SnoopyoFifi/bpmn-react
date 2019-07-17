@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { has, includes } from 'lodash';
 import { message } from 'antd';
 import BpmnModeler from 'bpmn-js/lib/NavigatedViewer';
+import minimapModule from 'diagram-js-minimap';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 import { query as queryDom, attr } from 'min-dom';
 import { appendTo as svgAppendTo, create as svgCreate, innerSVG, select } from 'tiny-svg';
+import EditingTools from '../components/EditingTools';
 import CustomRenderer from './modeler/customRenderer';
 import { diagramXML } from '../resources/newDiagram';
 import './Common.less';
@@ -21,7 +23,10 @@ export default class Bpmn extends Component {
 
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      scale: 1,
+      defalutScale: 1,
+    };
   }
 
   componentDidMount() {
@@ -29,6 +34,7 @@ export default class Bpmn extends Component {
       container: '#canvas',
       additionalModules: [
         CustomRenderer,
+        minimapModule,
         // lock modeler canvas
         {
           moveCanvas: ['value', ''], // 禁用move Viewport
@@ -50,6 +56,11 @@ export default class Bpmn extends Component {
       const eventBus = this.bpmnModeler.get('eventBus');
       const elementRegistry = this.bpmnModeler.get('elementRegistry');
       const elements = elementRegistry.getAll();
+
+      this.setState({
+        defalutScale: canvas.viewbox().scale,
+        scale: canvas.viewbox().scale
+      });
 
       const { customTasks } = this.props;
       const nodeCodes = [];
@@ -241,10 +252,30 @@ export default class Bpmn extends Component {
     });
   }
 
+  // 流程图放大缩小
+  handleZoom = (radio) => {
+    const { scale, defalutScale } = this.state;
+    const newScale = !radio
+      ? defalutScale // 不输入radio则还原
+      : scale + radio <= 0.2 // 最小缩小倍数
+        ? 0.2
+        : scale + radio;
+
+    this.bpmnModeler.get('canvas').zoom(newScale);
+    this.setState({
+      scale: newScale
+    });
+  };
+
   render() {
     return (
       <div className={styles.container} id="js-drop-zone">
         <div className={styles.canvas} id="canvas" />
+        <EditingTools
+          onZoomIn={() => this.handleZoom(0.1)}
+          onZoomOut={() => this.handleZoom(-0.1)}
+          onZoomReset={() => this.handleZoom()}
+        />
       </div>
     );
   }

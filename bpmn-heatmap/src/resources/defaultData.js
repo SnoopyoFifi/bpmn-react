@@ -1,7 +1,9 @@
 /* eslint-disable */
 const heatmapdata = [
+  { actId: 'Process_1_StartEvent_1u877e8', runCount: 12 },
   { actId: 'Process_1_Task_0fj7yth', runCount: 20 },
   { actId: 'Process_1_ServiceTask_1uho6in', runCount: 20 },
+  { actId: 'Process_1_ExclusiveGateway_1qp43yh', runCount: 15 },
 ];
 const customTasks = [
   {
