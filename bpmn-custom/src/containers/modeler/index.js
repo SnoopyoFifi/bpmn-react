@@ -15,7 +15,7 @@ import transactionBoundaries from './transactionBoundaries';
 export default function CustomModeler(options) {
   Modeler.call(this, options);
 
-  this.customElements = [];
+  // this.customElements = [];
 }
 
 inherits(CustomModeler, Modeler);

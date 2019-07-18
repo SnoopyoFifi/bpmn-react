@@ -45,6 +45,9 @@ export default class Bpmn extends Component {
       },
       keyboard: { bindTo: document }
     });
+
+    console.log('bpmnModeler: ', this.bpmnModeler);
+
     // 导入xml
     this.openDiagram(xml);
 
@@ -405,6 +408,7 @@ export default class Bpmn extends Component {
 
   // 前进
   handleRedo = () => {
+    console.log(this.bpmnModeler.get('commandStack'));
     this.bpmnModeler.get('commandStack').redo();
   };
 
