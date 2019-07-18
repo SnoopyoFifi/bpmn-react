@@ -6,6 +6,7 @@ import CustomPalette from './customPalette';
 import KeyboardModule from './keyboard';
 import CustomTranslate from './customTranslate';
 import ResizeAllModule from './resizeAllRules';
+import ColorPickerModule from './color-picker';
 // import PrioritiesModule from './taskPriorities';
 // import ReadOnly from './readOnly';
 import transactionBoundaries from './transactionBoundaries';
@@ -41,10 +42,13 @@ CustomModeler.prototype._modules = [].concat(
   ],
   // [
   //   PrioritiesModule
-  // ]
+  // ],
   // [
   //   ReadOnly
-  // ]
+  // ],
+  [
+    ColorPickerModule
+  ],
   [
     transactionBoundaries
   ]
