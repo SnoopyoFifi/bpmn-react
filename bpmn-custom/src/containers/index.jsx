@@ -6,11 +6,11 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 import { isEmpty, isArray, debounce } from 'lodash';
-import { message, Modal, notification } from 'antd';
+import { message, notification } from 'antd';
 import BpmnModeler from './modeler';
 import { registerFileDrop } from '../utils';
 // import defaultData from '../resources/defaultData';
-import { Header, EditingTools, CustomTasks } from '../components';
+import { Header, EditingTools } from '../components';
 import './Common.less';
 import styles from './Bpmn.module.less';
 
@@ -23,7 +23,6 @@ export default class Bpmn extends Component {
       scale: 1, // 流程图比例
       isShowPanel: true, // 是否展示propertiesPanel
       isShowFold: false, // 是否展示propertiesPanel
-      addCustomVisible: false, // 添加自定义任务
     };
   }
 
@@ -229,7 +228,6 @@ export default class Bpmn extends Component {
       // 显示自定义任务弹窗
       $('#canvas').on('click', '[data-action="create.add-custom-tasks"]', () => {
         // console.log($(this));
-        this.setState({ addCustomVisible: true });
       });
     });
   }
@@ -482,17 +480,8 @@ export default class Bpmn extends Component {
     });
   }
 
-  // 弹窗 - 隐藏不做
-  handleOk = () => {
-    this.handleCancel();
-  }
-
-  handleCancel = () => {
-    this.setState({ addCustomVisible: false });
-  }
-
   render() {
-    const { isShowPanel, isShowFold, addCustomVisible } = this.state;
+    const { isShowPanel, isShowFold } = this.state;
     // console.log(isShowPanel);
     return (
       <React.Fragment>
@@ -527,15 +516,6 @@ export default class Bpmn extends Component {
             onZoomReset={() => this.handleZoom()}
           />
         </div>
-        {/* <Footer /> */}
-        <Modal
-          title="Basic Modal"
-          visible={addCustomVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <CustomTasks />
-        </Modal>
       </React.Fragment>
     );
   }
