@@ -10,6 +10,7 @@
 
 # production
 /build
+/bpmnDemos
 
 # misc
 .DS_Store

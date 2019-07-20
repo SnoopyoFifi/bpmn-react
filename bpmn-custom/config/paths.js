@@ -72,7 +72,7 @@ const resolveModule = (resolveFn, filePath) => {
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
-  appBuild: resolveApp('../../workflow-ui/src/main/resources/static/modeler'),
+  appBuild: resolveApp('../bpmnDemos/bpmn-custom'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveModule(resolveApp, 'src/index'),
