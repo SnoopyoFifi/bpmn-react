@@ -1,0 +1,68 @@
+.editingTools {
+  position: absolute;
+  left: 50%;
+  margin-left: -100px;
+  top: 1px;
+  z-index: 1;
+}
+
+.controlList {
+  display: inline-block;
+  padding: 0;
+  margin-left: 10px;
+  background: #f8f8f8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 2px
+}
+
+.control {
+  position: relative;
+  display: inline-block;
+  padding: 6px 8px;
+  list-style-type: none
+}
+
+.control button {
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 26px;
+  color: #555;
+  background: none;
+  border: none
+}
+
+.control .openFile {
+  display: none
+}
+
+.control.line:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  height: 16px;
+  border-right: 1px solid #ddd
+}
+
+.control button i {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  font-style: none
+}
+
+.zoom {
+  background: url('../../../resources/icons/zoom.svg') 0 0 no-repeat
+}
+
+.zoomIn {
+  background: url('../../../resources/icons/zoomIn.svg') 0 0 no-repeat
+}
+
+.zoomOut {
+  background: url('../../../resources/icons/zoomOut.svg') 0 0 no-repeat
+}

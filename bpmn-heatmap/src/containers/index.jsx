@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
+import { event as domEvent, remove, query, attr } from 'min-dom';
 import BpmnModeler from 'bpmn-js/lib/NavigatedViewer';
+import minimapModule from 'diagram-js-minimap';
 import { includes } from 'lodash';
 import heatmap from 'heatmap.js';
 import CustomRenderer from './modeler/customRenderer';
+import EditingTools from './components/EditingTools';
 import './Common.less';
 import styles from './Bpmn.module.less';
 
@@ -17,7 +20,9 @@ export default class Bpmn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // heatmapInstance: {},
+      scale: 1, // 流程图比例
+      defalutScale: 1,
+      heatmapInstance: null,
     };
   }
 
@@ -26,9 +31,10 @@ export default class Bpmn extends Component {
       container: '#canvas',
       additionalModules: [
         CustomRenderer,
+        minimapModule,
         // lock modeler canvas
         {
-          moveCanvas: ['value', ''], // 禁用move Viewport
+          // moveCanvas: ['value', ''], // 禁用move Viewport
           zoomScroll: ['value', '']
         }
       ]
@@ -46,29 +52,37 @@ export default class Bpmn extends Component {
         message.error('模型加载有误！');
       } else {
         const canvas = this.bpmnModeler.get('canvas');
-        // zoom to fit full viewport
-        if (heatmapdata.length) {
-          this.renderHeatmap(heatmapdata, canvas);
+        canvas.zoom('fit-viewport');
+        // console.log('heatmapdata0： ', heatmapdata);
+        if (heatmapdata && heatmapdata.length) {
+          this.renderHeatmap(canvas);
+          domEvent.bind(query('.djs-container'), 'mousemove', () => {
+            if (query('.heatmap-canvas')) remove(query('.heatmap-canvas'));
+            this.renderHeatmap(canvas);
+          });
         } else {
-          canvas.zoom('fit-viewport');
+          this.setState({ heatmapInstance: null });
         }
+        this.setState({
+          defalutScale: canvas.viewbox().scale,
+          scale: canvas.viewbox().scale
+        });
       }
     });
   }
 
   // render heatmap
-  renderHeatmap = (heatmapdata, canvas) => {
+  renderHeatmap = (canvas) => {
     let points = [];
     let heatmapData = {};
+    const { heatmapdata } = this.props;
+    let { heatmapInstance } = this.state;
     const elementRegistry = this.bpmnModeler.get('elementRegistry');
-    // const elements = elementRegistry.getAll();
-    // console.log('elements: ', elements);
-    canvas.zoom('fit-viewport');
     const viewbox = canvas.viewbox();
-    // console.log('viewbox: ', viewbox);
+
     // get viewbox position & scale
     const {
-      // inner: { x: X, y: Y },
+      inner: { x: oX, y: oY },
       outer: { height: H, width: W },
       x: X, y: Y,
       scale, // zoom rate
@@ -81,12 +95,13 @@ export default class Bpmn extends Component {
     const connections = elementRegistry.filter((element) => {
       return !!element.waypoints && element.parent;
     });
-
+    console.log('viewbox: ', viewbox);
     const shapePoints = [];
     shapes.forEach((shape) => {
       const { x, y, width: w, height: h, type, id } = shape;
-      const shapeX = x * scale - X * scale;
-      const shapeY = y * scale - Y * scale;
+      // 适配热力图移出左上方
+      const shapeX = x * scale - X * scale + (X < 0 ? (X - oX) * scale : (X > 0 ? (X - oX) * scale : 0)); // eslint-disable-line
+      const shapeY = y * scale - Y * scale + (Y > 0 ? (Y - oY) * scale : 0);
       const shapeW = w * scale;
       const shapeH = h * scale;
       heatmapdata.forEach((heat) => {
@@ -170,7 +185,7 @@ export default class Bpmn extends Component {
 
     if (points.length) {
       // heatmap
-      console.log('points: ', points);
+      // console.log('points: ', points);
       /*  start legend code */
       const legendCanvas = document.createElement('canvas');
       legendCanvas.width = 100;
@@ -218,9 +233,9 @@ export default class Bpmn extends Component {
         maxV = Math.max(maxV, +item.value);
       });
       const config = {
-        container: document.querySelector('#canvas'),
-        width: W,
-        height: H,
+        container: query('#canvas'),
+        width: +W + (X < 0 ? Math.round(+((X - oX) * scale)) : (X > 0 ? -(X - oX) * scale : 0)),
+        height: +H + (Y > 0 ? Math.round(+((Y - oY) * scale)) : 0),
         radius: 46,
         // radius: 60,
         // max: 100,
@@ -233,15 +248,28 @@ export default class Bpmn extends Component {
         //   '.95': '#ff3c00'
         // }
         onExtremaChange: (data) => {
-          console.log('legendData: ', data);
-          updateLegend(data);
+          if (heatmapdata && heatmapdata.length) {
+            updateLegend(data);
+          }
         }
       };
       heatmapData = {
         max: maxV,
         data: points,
       };
-      const heatmapInstance = heatmap.create(config);
+      heatmapInstance = heatmap.create(config);
+
+      // 当viewbox移出左上方时，调整热力图canvas位置
+      // console.log('X: ', X);
+      attr(
+        query('.heatmap-canvas'),
+        'style',
+        `
+          position: absolute;
+          left: ${X < 0 ? -((X - oX) * scale) : (X > 0 ? -(X - oX) * scale : 0)}px;
+          top: ${Y > 0 ? -((Y - oY) * scale) : 0}px
+        `
+      );
 
       /* tooltip code start */
       const heatWrap = document.querySelector('#canvas');
@@ -259,12 +287,12 @@ export default class Bpmn extends Component {
           tooltip.style.display = 'none';
           return false;
         }
-        const x = ev.layerX;
-        const y = ev.layerY;
+        const x = ev.layerX + (X < 0 ? -((X - oX) * scale) : 0);
+        const y = ev.layerY + (Y > 0 ? -((Y - oY) * scale) : 0);
         // getValueAt gives us the value for a point p(x/y)
         const value = heatmapInstance.getValueAt({ x, y });
-        console.log('value: ', value);
-        tooltip.style.display = 'block';
+        // console.log(x, y, value);
+        tooltip.style.display = 'none';
         updateTooltip(x, y, value);
       };
       // hide tooltip on mouseout
@@ -273,15 +301,41 @@ export default class Bpmn extends Component {
       };
       /* tooltip code end */
 
-      heatmapInstance.repaint();
+      // heatmapInstance.repaint();
       heatmapInstance.setData(heatmapData);
+      this.setState({ heatmapInstance: null });
     }
   }
+
+  // 流程图放大缩小
+  handleZoom = (radio) => {
+    const canvas = this.bpmnModeler.get('canvas');
+    // const { heatmapdata } = this.props;
+    const { scale, defalutScale } = this.state;
+    const newScale = !radio
+      ? defalutScale // 不输入radio则还原
+      : scale + radio <= 0.2 // 最小缩小倍数
+        ? 0.2
+        : scale + radio;
+
+    this.bpmnModeler.get('canvas').zoom(newScale);
+    this.setState({
+      scale: newScale
+    });
+    if (query('.heatmap-canvas')) remove(query('.heatmap-canvas'));
+    // this.renderHeatmap(JSON.parse(JSON.stringify(heatmapdata)), canvas);
+    this.renderHeatmap(canvas);
+  };
 
   render() {
     return (
       <div className={styles.container} id="js-drop-zone">
         <div className={styles.canvas} id="canvas" />
+        <EditingTools
+          onZoomIn={() => this.handleZoom(0.1)}
+          onZoomOut={() => this.handleZoom(-0.1)}
+          onZoomReset={() => this.handleZoom()}
+        />
         <div className={styles.legend_wrap}>
           <div id="heatmapLegend" className={styles.heatmap_legend}>
             <span id="min" className={styles.legend_min} />

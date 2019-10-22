@@ -68,7 +68,10 @@
     // height: 500px;
     // height: 680px;
     padding-bottom: 24px;
-    border: 1px solid #323659;    
+    border: 1px solid #323659;        
+    :global(.heatmap-canvas) {
+      z-index: 0;
+    }
   }
   :global {
     .diagram-note {
@@ -135,6 +138,7 @@
       }
     }
     .bjs-container {
+      z-index: 1;
       .bjs-powered-by {
         display: none;
       }
@@ -161,6 +165,9 @@
         .connection-shadow .djs-visual > :nth-child(1) {
           box-shadow: 10px 10px 5px #888888;
         }
+        rect, circle, polygon {
+          fill: transparent !important;
+        }
         .djs-element {
           &.djs-shape {
             cursor: pointer;
@@ -184,6 +191,106 @@
           }
         }
        
+      }
+    }
+    // 缩略图
+    .djs-minimap {
+      position: absolute;
+      right: 0;
+      top: 0;
+      overflow: hidden;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: solid 1px #CCC;
+      border-radius: 2px;
+      box-sizing: border-box;
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -webkit-user-select: none;
+      .map {
+        display: none;
+        width: 200px;
+        height: 112px;
+        cursor: crosshair;
+      }
+      .viewport {
+        /* fill: rgba(255, 116, 0, 0.25); */
+        fill: none;
+        stroke: none;
+      }
+      .viewport-dom {
+        position: absolute;
+        border: dashed 2px @primary-color;
+        border-radius: 2px;
+        box-sizing: border-box;
+        cursor: move;
+      }
+      .cursor-crosshair {
+        cursor: crosshair;
+      }
+
+      .cursor-move {
+        cursor: move;
+      }
+      &:not(.open) {
+        overflow: hidden;
+        .toggle {
+          width: 38px;
+          height: 38px;
+          line-height: 38px;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+          cursor: pointer;
+          position: relative;
+          text-align: center;
+          line-height: 38px;
+          &:before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            top: 6px;
+            right: 6px;
+            background: url(../resources/icons/mapOpen.svg) 0 0 no-repeat;
+            background-size: cover;
+          }
+        }
+        .viewport-dom {
+          display: none;
+        }
+      } 
+      &.open {
+        .map {
+          display: block;
+        }
+        .toggle {
+          position: absolute;
+          right: 0;
+          z-index: 1;
+          width: 38px;
+          height: 38px;
+          line-height: 38px;
+          text-align: center;
+          cursor: pointer;
+          &:before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 5px;
+            left: 10px;
+            background: url(../resources/icons/mapClose.svg) 0 0 no-repeat;
+            background-size: cover;
+          }
+        }
+        .overlay {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(255, 255, 255, 0.2);
+          pointer-events: none;
+        }
       }
     }
   }
